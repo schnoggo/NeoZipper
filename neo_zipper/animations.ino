@@ -26,11 +26,13 @@ void StartAnimation(uint8_t which_animation){
 
   switch (which_animation){
     case SPARKS_ANIM:
+    case CENTER_OUT_ANIM:
       ClearPanel(false);
     break;
 
     case SOLID_ANIM:
-    SolidPanel(0x222222, true);
+
+    SolidPanel(FadedColor(0,0), true);
   }
   if (SOLID_ANIM == which_animation){
 
@@ -66,6 +68,65 @@ switch(current_animation) {
   frame_duration = 5;
   pixels_dirty =  true;
   break;
+
+
+case CENTER_OUT_ANIM:
+  ClearPanel(true);
+  frame_duration = 1000;
+  switch (animation_frame){
+    case 0:
+      DrawPanelRow(2,0,0);
+    break;
+
+    case 1:
+      DrawPanelRow(2,0,1);
+      DrawPanelRow(1,0,0);
+      DrawPanelRow(3,0,0);
+    break;
+
+    case 2:
+      DrawPanelRow(2,0,2);
+      DrawPanelRow(1,0,1);
+      DrawPanelRow(3,0,1);
+      DrawPanelRow(0,0,0);
+      DrawPanelRow(4,0,0);
+    break;
+
+    case 3:
+      DrawPanelRow(1,0,2);
+      DrawPanelRow(3,0,2);
+      DrawPanelRow(0,0,1);
+      DrawPanelRow(4,0,1);
+    break;
+
+    case 4:
+      DrawPanelRow(0,0,2);
+      DrawPanelRow(4,0,2);
+    break;
+
+    case 5:
+
+    ClearPanel(true);
+    frame_duration = 5000;
+
+    break;
+  }
+  if ((++animation_frame)>5) {animation_frame = 0;}
+  pixels_dirty =  true;
+
+break;
+
+case TEST_ROW_ANIM:
+
+
+  ClearPanel(false);
+  DrawPanelRow(animation_frame,0,0);
+
+  frame_duration = 1000;
+  if ((++animation_frame)>4) {animation_frame = 0;}
+      pixels_dirty =  true;
+break;
+
 /*
   case FLASH_ANIM:
   // blinky
@@ -187,6 +248,8 @@ switch(current_animation) {
 
 }
 
+
+
 /**
  * Light an LED at specified location
  *
@@ -201,8 +264,8 @@ void DrawPanelPixel(
   uint8_t x,
   uint8_t y,
   uint8_t palette_select,
-  uint8_t palette_index,
-  uint8_t fade_amount
+  uint8_t palette_index
+//  uint8_t fade_amount
 //  boolean alternate
 ){
 
@@ -210,9 +273,29 @@ void DrawPanelPixel(
   //  this_color = FadedColor((clone_count%2), palette_index); // gives us our 32-bit color
   this_color = FadedColor(palette_select, palette_index); // gives us our 32-bit color
 
-  pixels.setPixelColor(  x*PANEL_HEIGHT + y , this_color);
+  pixels.setPixelColor(  panel_coords2pixel[x*PANEL_HEIGHT + y] , this_color);
 
 }
+
+
+/**
+ * Light horizontal row
+ *
+ * @param uint8_t y position which pixel to light up
+ * @param which palette (0 or 1)
+ * @param palette_index index of this color in the palette
+ */
+void DrawPanelRow(
+  uint8_t y,
+  uint8_t palette_select,
+  uint8_t palette_index
+){
+  uint8_t horiz = 0;
+  for(horiz=0; horiz<PANEL_WIDTH; horiz++){
+    DrawPanelPixel(horiz,y,palette_select,palette_index);
+  }
+}
+
 
 
 /**
@@ -229,7 +312,10 @@ void ClearPanel(boolean show){
  * @param boolean show true = display immediately. false = don't call show()
  */
 void SolidPanel(uint32_t c, boolean show){
-    for(i=0; i<MAX_PIXELS; i++) pixels.setPixelColor(i, c);
+    int pixel_offset;
+    for(pixel_offset=0; pixel_offset<MAX_PIXELS; pixel_offset++){
+      pixels.setPixelColor(pixel_offset, c);
+    }
     if (show){
       pixels.show();
     }

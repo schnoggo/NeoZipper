@@ -18,7 +18,7 @@
 // width is how many strips
 // we assume strips are connecter zip-zag (snake) style
 #define PANEL_HEIGHT 5
-#define PANEL_WIDTH 3
+#define PANEL_WIDTH 4
 #define MAX_PIXELS PANEL_HEIGHT*PANEL_WIDTH
 // Data pin for NeoPixels:
 #define NEOPIXEL_PIN 0
@@ -40,6 +40,7 @@
 #define ARROW_LEFT_ANIM 5
 #define ARROW_RIGHT_ANIM 6
 #define CENTER_OUT_ANIM 7
+#define TEST_ROW_ANIM 8
 
 
 // other animation Constants:
