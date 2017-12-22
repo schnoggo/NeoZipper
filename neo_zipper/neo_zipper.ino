@@ -18,7 +18,7 @@
 //Adafruit_NeoPixel pixels = Adafruit_NeoPixel(32, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800 );
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(MAX_PIXELS , NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
-#define ANIM_DURATION 80000 // 8 seconds on each effect
+#define ANIM_DURATION 10000 // 8 seconds on each effect
 
 // Global reusable variables so we don't allocate inside functions and loops
 long rgb[3]; // generic RGB values - long so we can calculate and scale
@@ -32,15 +32,17 @@ uint8_t  mode   = 0, // Current animation effect
          rightOff = 2;
 boolean auto_advance =  true;
 uint8_t animation_pool[] {
- SPARKS_ANIM,
+  TEST_ROW_ANIM,
+  CENTER_OUT_ANIM,
+  SPARKS_ANIM,
  //BARBER_POLE_ANIM,
 // FLASH_ANIM,
  //LARSON_SCANNER_ANIM,
 // SOLID_ANIM,
 // ARROW_LEFT_ANIM,
  //ARROW_RIGHT_ANIM,
-//TEST_ROW_ANIM,
-CENTER_OUT_ANIM
+
+
 };
 // Color and animation stuff:
 uint8_t current_animation = SPARKS_ANIM;
@@ -104,9 +106,8 @@ void setup() {
   dprintln("START");
   // set up neopixel ring:
   pixels.begin();
-  pixels.setBrightness(20); // was 80
+  pixels.setBrightness(200); // was 80
 
-  dprintln("Solid called");
 
 }
 

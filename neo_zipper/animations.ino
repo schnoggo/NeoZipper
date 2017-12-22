@@ -71,47 +71,48 @@ switch(current_animation) {
 
 
 case CENTER_OUT_ANIM:
-  ClearPanel(true);
-  frame_duration = 1000;
-  switch (animation_frame){
-    case 0:
-      DrawPanelRow(2,0,0);
-    break;
+  ClearPanel(false);
+  dprintln(animation_frame);
 
-    case 1:
-      DrawPanelRow(2,0,1);
-      DrawPanelRow(1,0,0);
-      DrawPanelRow(3,0,0);
-    break;
+  if ( 5 == animation_frame){
+    frame_duration = 2000;
+  } else {
+    frame_duration = 100;
+    switch (animation_frame){
+      case 0:
+        DrawPanelRow(2,0,0);
+      break;
 
-    case 2:
-      DrawPanelRow(2,0,2);
-      DrawPanelRow(1,0,1);
-      DrawPanelRow(3,0,1);
-      DrawPanelRow(0,0,0);
-      DrawPanelRow(4,0,0);
-    break;
+      case 1:
+        DrawPanelRow(2,0,1);
+        DrawPanelRow(1,0,0);
+        DrawPanelRow(3,0,0);
+      break;
 
-    case 3:
-      DrawPanelRow(1,0,2);
-      DrawPanelRow(3,0,2);
-      DrawPanelRow(0,0,1);
-      DrawPanelRow(4,0,1);
-    break;
+      case 2:
+        DrawPanelRow(2,0,2);
+        DrawPanelRow(1,0,1);
+        DrawPanelRow(3,0,1);
+        DrawPanelRow(0,0,0);
+        DrawPanelRow(4,0,0);
+      break;
 
-    case 4:
-      DrawPanelRow(0,0,2);
-      DrawPanelRow(4,0,2);
-    break;
+      case 3:
+        DrawPanelRow(1,0,2);
+        DrawPanelRow(3,0,2);
+        DrawPanelRow(0,0,1);
+        DrawPanelRow(4,0,1);
+      break;
 
-    case 5:
-
-    ClearPanel(true);
-    frame_duration = 5000;
-
-    break;
+      case 4:
+        DrawPanelRow(0,0,2);
+        DrawPanelRow(4,0,2);
+      break;
+    } // switch animation_frame
+  } // if last frame
+  if ((++animation_frame)>4) {
+    animation_frame = 0;
   }
-  if ((++animation_frame)>5) {animation_frame = 0;}
   pixels_dirty =  true;
 
 break;
@@ -120,10 +121,14 @@ case TEST_ROW_ANIM:
 
 
   ClearPanel(false);
-  DrawPanelRow(animation_frame,0,0);
+  uint8_t current_row = animation_frame; // 0 - 9
+  if (current_row >= PANEL_HEIGHT){
+    current_row = (PANEL_HEIGHT*2-2)-current_row;
+  }
+  DrawPanelRow(current_row,0,0);
 
-  frame_duration = 1000;
-  if ((++animation_frame)>4) {animation_frame = 0;}
+  frame_duration = 40;
+  if ((++animation_frame)>(PANEL_HEIGHT*2-2)) {animation_frame = 0;}
       pixels_dirty =  true;
 break;
 
@@ -272,6 +277,8 @@ void DrawPanelPixel(
 
   //  this_color = FadedColor((clone_count%2), palette_index); // gives us our 32-bit color
   this_color = FadedColor(palette_select, palette_index); // gives us our 32-bit color
+  while(x>=PANEL_WIDTH){x = x - PANEL_WIDTH;}
+  while(y>=PANEL_HEIGHT){y = y - PANEL_HEIGHT;}
 
   pixels.setPixelColor(  panel_coords2pixel[x*PANEL_HEIGHT + y] , this_color);
 
